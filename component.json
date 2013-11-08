@@ -1,7 +1,7 @@
 {
   "name": "redact-popover",
   "repo": "yields/redact-popover",
-  "description": "medium inspired redact popover",
+  "description": "medium inspired editor popover",
   "keywords": ["medium", "popover", "tooltip", "tip", "redact"],
   "version": "0.0.1",
   "license": "MIT",
