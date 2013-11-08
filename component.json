@@ -1,0 +1,20 @@
+{
+  "name": "redact-popover",
+  "repo": "yields/redact-popover",
+  "description": "medium inspired redact popover",
+  "keywords": ["medium", "popover", "tooltip", "tip", "redact"],
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": ["index.js"],
+  "dependencies": {
+    "yields/on-select": "*",
+    "component/emitter": "*",
+    "component/events": "*",
+    "component/tip": "*",
+    "yields/slug": "*"
+  },
+  "development": {
+    "component/aurora-tip": "*"
+  }
+}
