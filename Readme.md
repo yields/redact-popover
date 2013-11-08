@@ -36,15 +36,15 @@
 
 #### .tip
 
-  [`component/tip`](/component/tip) instance.
+  [`component/tip`](https://github.com/component/tip) instance.
 
 #### .classes
 
-  [`component/classes`](/component/classes) instance.
+  [`component/classes`](https://github.com/component/classes) instance.
 
 #### .events
 
-  [`component/events`](/component/events) instance.
+  [`component/events`](https://github.com/component/events) instance.
 
 ## License
 
