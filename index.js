@@ -210,6 +210,7 @@ RedactPopover.prototype.onclick = function(e){
  */
 
 RedactPopover.prototype.onselect = function(e){
+  if ('' == trim(selected())) return;
   var a = this.boundary();
   var b = this.size;
   var x = a.left + (a.width / 2) - (b.width / 2)
