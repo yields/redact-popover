@@ -1,0 +1,9 @@
+{
+  "name": "redact-popover-demo",
+  "dependencies": {
+    "yields/redact-popover": "*"
+  },
+  "development": {
+    "component/aurora-tip": "*"
+  }
+}

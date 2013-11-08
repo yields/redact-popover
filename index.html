@@ -1,1 +1,81 @@
-My Page
+<!DOCTYPE html>
+<html>
+<head>
+  <title>redact-popover</title>
+  <link rel='stylesheet' href='build/build.css'>
+  <style>
+    body {
+      font: 200 14px 'Helvetica Neue';
+      padding: 80px;
+    }
+
+    h1 {
+      font: 300 28px 'Helvetica Neue';
+    }
+
+    [contenteditable] {
+      padding: 8px;
+      border-left: 4px solid #eee;
+      max-width: 300px;
+    }
+
+    :focus {
+      outline: 0 none;
+    }
+
+    .redact-popover a {
+      color: #fff;
+      font-weight: bold;
+      padding: 6px;
+      border-right: 1px solid #222;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .redact-popover a:last-child {
+      border-right: 0 none;
+    }
+
+    .redact-popover a:hover {
+      background: #222;
+    }
+
+    .redact-popover .tip-inner {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .tip {
+      -webkit-transition: -webkit-transform 50ms;
+      -moz-transition: -moz-transform 50ms;
+      -webkit-transform: scale(1);
+      -moz-transform: scale(1);
+    }
+
+    .tip-hide {
+      -webkit-transform: scale(0);
+      -moz-transform: scale(0);
+    }
+  </style>
+</head>
+<body>
+  <div contenteditable>
+      <h1>dr evil</h1>
+      <p>The details of my life are quite inconsequential ... Very well, where do I begin? My father was a relentlessly self-improving boulangerie owner from Belgium with low-grade narcolepsy and a penchant for buggery. My mother was a 15-year-old French prostitute named Chloé with webbed feet. My father would womanize; he would drink. He would make outrageous claims like he invented the question mark. Sometimes, he would accuse chestnuts of being lazy. The sort of general malaise that only the genius possess and the insane lament ... My childhood was typical: summers in Rangoon ... luge lessons ... In the spring, we'd make meat helmets ... When I was insolent I was placed in a burlap bag and beaten with reeds — pretty standard, really. At the age of 12, I received my first scribe. At the age of 14, a Zoroastrian named Vilmer ritualistically shaved my testicles. There really is nothing like a shorn scrotum — it's breathtaking ... I suggest you try it</p>
+  </div>
+
+  <script src='build/build.js'></script>
+  <script>
+    var el = document.body.children[0];
+    var popover = require('redact-popover')(el);
+
+    popover.add('bold', 'B');
+    popover.add('italic', 'I');
+    popover.add('underline', 'U');
+
+    popover.on('click', function(action){
+      document.execCommand(action);
+    });
+  </script>
+</body>
+</html>
