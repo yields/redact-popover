@@ -3,10 +3,12 @@
  * Dependencies
  */
 
+var selected = require('get-selected-text');
 var onselect = require('on-select');
 var Emitter = require('emitter');
 var events = require('events');
 var slug = require('slug');
+var trim = require('trim');
 var Tip = require('tip');
 
 /**
@@ -225,12 +227,8 @@ RedactPopover.prototype.onselect = function(e){
  */
 
 RedactPopover.prototype.onchange = function(e){
-  var sel = window.getSelection();
-  if ('Range' != sel.type) return this.hide();
-  var range = sel.getRangeAt(0);
-  var start = range.startOffset;
-  var end = range.endOffset;
-  if (start == end) this.hide();
+  if ('' != trim(selected())) return;
+  this.hide();
 };
 
 /**

@@ -9,9 +9,11 @@
   "main": "index.js",
   "scripts": ["index.js"],
   "dependencies": {
+    "yields/get-selected-text": "*",
     "yields/on-select": "*",
     "component/emitter": "*",
     "component/events": "*",
+    "component/trim": "*",
     "component/tip": "*",
     "yields/slug": "*"
   },
