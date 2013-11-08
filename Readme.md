@@ -1,4 +1,3 @@
-
 # redact-popover
 
   medium inspired editor popover
@@ -41,11 +40,11 @@
 
 #### .classes
 
-  [`component/classes`] instance.
+  [`component/classes`](/component/classes) instance.
 
 #### .events
 
-  [`component/events`] instance.
+  [`component/events`](/component/events) instance.
 
 ## License
 
