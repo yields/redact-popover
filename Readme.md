@@ -1,6 +1,8 @@
 # redact-popover
 
-  medium inspired editor popover
+  medium inspired editor popover.
+
+  [demo](http://yields.github.io/redact-popover/index.html)
 
 ## Installation
 

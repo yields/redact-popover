@@ -1,6 +1,7 @@
 {
   "name": "redact-popover",
   "repo": "yields/redact-popover",
+  "demo": "http://yields.github.io/redact-popover/index.html",
   "description": "medium inspired editor popover",
   "keywords": ["medium", "popover", "tooltip", "tip", "redact"],
   "version": "0.0.2",
