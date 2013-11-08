@@ -24,22 +24,15 @@ module.exports = RedactPopover;
 
 function RedactPopover(el){
   if (!(this instanceof RedactPopover)) return new RedactPopover(el);
-  var self = this;
   this.options = {};
   this.tip = new Tip('');
   this.el = this.tip.inner;
   this.classes = this.tip.classes;
   this.classes.add('redact-popover');
   this.events = events(this.el, this);
-  this.events.bind('mousedown');
-  this.events.bind('click');
   this.editorEvents = events(el, this);
-  this.editorEvents.bind('mouseup', 'onchange');
-  this.editorEvents.bind('keyup', 'onchange');
-  this.editorEvents.bind('blur');
-  onselect(el, function(e){
-    self.onselect(e);
-  });
+  this.editor = el;
+  this.bind();
 }
 
 /**
@@ -47,6 +40,42 @@ function RedactPopover(el){
  */
 
 Emitter(RedactPopover.prototype);
+
+/**
+ * Bind internal events.
+ *
+ * @return {RedactPopover}
+ * @api public
+ */
+
+RedactPopover.prototype.bind = function(){
+  if (this.bound) return this;
+  var select = this.onselect.bind(this);
+  this._select = onselect(this.editor, select);
+  this.editorEvents.bind('mouseup', 'onchange');
+  this.editorEvents.bind('keyup', 'onchange');
+  this.editorEvents.bind('blur');
+  this.events.bind('mousedown');
+  this.events.bind('click');
+  this.bound = true;
+  return this;
+};
+
+/**
+ * Unbind internal events.
+ *
+ * @return {RedactPopover}
+ * @api public
+ */
+
+RedactPopover.prototype.unbind = function(){
+  if (!this.bound) return this;
+  this.editorEvents.unbind();
+  this.events.unbind();
+  this.bound = null;
+  this._select();
+  return this;
+};
 
 /**
  * Add option `id`.
