@@ -201,7 +201,7 @@ RedactPopover.prototype.onclick = function(e){
   var id = el.getAttribute('data-id');
   this.emit('click', id, el);
   this.emit('click ' + id, el);
-  this.ignore = true;
+  this.onselect(e);
 };
 
 /**
