@@ -214,8 +214,10 @@ RedactPopover.prototype.onselect = function(e){
   var a = this.boundary();
   var b = this.size;
   var x = a.left + (a.width / 2) - (b.width / 2)
-  var y = a.top + -b.height + window.scrollY;
-  this.tip.show(x, y);
+  var y = a.top + -b.height;
+  var wx = window.scrollX;
+  var wy = window.scrollY;
+  this.tip.show(x + wx, y + wy);
 };
 
 /**
