@@ -199,6 +199,28 @@ require.relative = function(parent) {
 
   return localRequire;
 };
+require.register("yields-get-selected-text/index.js", Function("exports, require, module",
+"\n\
+/**\n\
+ * Selection\n\
+ */\n\
+\n\
+var selection = window.getSelection\n\
+  ? window.getSelection()\n\
+  : document.selection;\n\
+\n\
+/**\n\
+ * Get user selected text.\n\
+ *\n\
+ * @return {String}\n\
+ * @api public\n\
+ */\n\
+\n\
+module.exports = function(){\n\
+  return selection.toString();\n\
+};\n\
+//@ sourceURL=yields-get-selected-text/index.js"
+));
 require.register("component-event/index.js", Function("exports, require, module",
 "\n\
 /**\n\
@@ -283,6 +305,21 @@ exports.cancel = function(id){\n\
 };\n\
 //@ sourceURL=component-raf/index.js"
 ));
+require.register("bmcmahen-modifier/index.js", Function("exports, require, module",
+"module.exports = function(e){\n\
+ return e.shiftKey\n\
+  || e.altKey\n\
+  || e.ctrlKey\n\
+  || e.metaKey;\n\
+};//@ sourceURL=bmcmahen-modifier/index.js"
+));
+require.register("bmcmahen-text-selection/index.js", Function("exports, require, module",
+"var selection = window.getSelection();\n\
+\n\
+module.exports = function(){\n\
+  return selection.toString();\n\
+};//@ sourceURL=bmcmahen-text-selection/index.js"
+));
 require.register("yields-on-select/index.js", Function("exports, require, module",
 "\n\
 /**\n\
@@ -292,6 +329,8 @@ require.register("yields-on-select/index.js", Function("exports, require, module
 var event = require('event');\n\
 var raf = require('raf');\n\
 var caf = raf.cancel;\n\
+var selected = require('text-selection');\n\
+var mod = require('modifier');\n\
 \n\
 /**\n\
  * Selection\n\
@@ -325,35 +364,7 @@ module.exports = function(el, fn){\n\
     event.unbind(el, 'mouseup', callback);\n\
     event.unbind(el, 'keyup', callback);\n\
   }\n\
-};\n\
-\n\
-/**\n\
- * Check if there's a selection.\n\
- *\n\
- * @return {Boolean}\n\
- * @api public\n\
- */\n\
-\n\
-function selected(){\n\
-  var range = selection.getRangeAt(0);\n\
-  return range.startOffset < range.endOffset;\n\
-};\n\
-\n\
-/**\n\
- * Check if the keyup event is a modifier.\n\
- *\n\
- * @param {Event} e\n\
- * @return {Boolean}\n\
- * @api public\n\
- */\n\
-\n\
-function mod(e){\n\
-  return e.shiftKey\n\
-    || e.altKey\n\
-    || e.ctrlKey\n\
-    || e.metaKey;\n\
-}\n\
-//@ sourceURL=yields-on-select/index.js"
+};//@ sourceURL=yields-on-select/index.js"
 ));
 require.register("component-indexof/index.js", Function("exports, require, module",
 "module.exports = function(arr, obj){\n\
@@ -846,6 +857,26 @@ function parse(event) {\n\
   }\n\
 }\n\
 //@ sourceURL=component-events/index.js"
+));
+require.register("component-trim/index.js", Function("exports, require, module",
+"\n\
+exports = module.exports = trim;\n\
+\n\
+function trim(str){\n\
+  if (str.trim) return str.trim();\n\
+  return str.replace(/^\\s*|\\s*$/g, '');\n\
+}\n\
+\n\
+exports.left = function(str){\n\
+  if (str.trimLeft) return str.trimLeft();\n\
+  return str.replace(/^\\s*/, '');\n\
+};\n\
+\n\
+exports.right = function(str){\n\
+  if (str.trimRight) return str.trimRight();\n\
+  return str.replace(/\\s*$/, '');\n\
+};\n\
+//@ sourceURL=component-trim/index.js"
 ));
 require.register("component-domify/index.js", Function("exports, require, module",
 "\n\
@@ -2339,10 +2370,12 @@ require.register("yields-redact-popover/index.js", Function("exports, require, m
  * Dependencies\n\
  */\n\
 \n\
+var selected = require('get-selected-text');\n\
 var onselect = require('on-select');\n\
 var Emitter = require('emitter');\n\
 var events = require('events');\n\
 var slug = require('slug');\n\
+var trim = require('trim');\n\
 var Tip = require('tip');\n\
 \n\
 /**\n\
@@ -2360,22 +2393,16 @@ module.exports = RedactPopover;\n\
 \n\
 function RedactPopover(el){\n\
   if (!(this instanceof RedactPopover)) return new RedactPopover(el);\n\
-  var self = this;\n\
   this.options = {};\n\
   this.tip = new Tip('');\n\
   this.el = this.tip.inner;\n\
   this.classes = this.tip.classes;\n\
   this.classes.add('redact-popover');\n\
   this.events = events(this.el, this);\n\
-  this.events.bind('mousedown');\n\
-  this.events.bind('click');\n\
+  this.winEvents = events(window, this);\n\
   this.editorEvents = events(el, this);\n\
-  this.editorEvents.bind('mouseup', 'onchange');\n\
-  this.editorEvents.bind('keyup', 'onchange');\n\
-  this.editorEvents.bind('blur');\n\
-  onselect(el, function(e){\n\
-    self.onselect(e);\n\
-  });\n\
+  this.editor = el;\n\
+  this.bind();\n\
 }\n\
 \n\
 /**\n\
@@ -2383,6 +2410,43 @@ function RedactPopover(el){\n\
  */\n\
 \n\
 Emitter(RedactPopover.prototype);\n\
+\n\
+/**\n\
+ * Bind internal events.\n\
+ *\n\
+ * @return {RedactPopover}\n\
+ * @api public\n\
+ */\n\
+\n\
+RedactPopover.prototype.bind = function(){\n\
+  if (this.bound) return this;\n\
+  var select = this.onselect.bind(this);\n\
+  this._select = onselect(this.editor, select);\n\
+  this.editorEvents.bind('mouseup', 'onchange');\n\
+  this.editorEvents.bind('keyup', 'onchange');\n\
+  this.winEvents.bind('resize', 'onselect');\n\
+  this.editorEvents.bind('blur');\n\
+  this.events.bind('mousedown');\n\
+  this.events.bind('click');\n\
+  this.bound = true;\n\
+  return this;\n\
+};\n\
+\n\
+/**\n\
+ * Unbind internal events.\n\
+ *\n\
+ * @return {RedactPopover}\n\
+ * @api public\n\
+ */\n\
+\n\
+RedactPopover.prototype.unbind = function(){\n\
+  if (!this.bound) return this;\n\
+  this.editorEvents.unbind();\n\
+  this.events.unbind();\n\
+  this.bound = null;\n\
+  this._select();\n\
+  return this;\n\
+};\n\
 \n\
 /**\n\
  * Add option `id`.\n\
@@ -2515,11 +2579,14 @@ RedactPopover.prototype.onclick = function(e){\n\
  */\n\
 \n\
 RedactPopover.prototype.onselect = function(e){\n\
+  if ('' == trim(selected())) return;\n\
   var a = this.boundary();\n\
   var b = this.size;\n\
   var x = a.left + (a.width / 2) - (b.width / 2)\n\
-  var y = a.top + -b.height + window.scrollY;\n\
-  this.tip.show(x, y);\n\
+  var y = a.top + -b.height;\n\
+  var wx = window.scrollX;\n\
+  var wy = window.scrollY;\n\
+  this.tip.show(x + wx, y + wy);\n\
 };\n\
 \n\
 /**\n\
@@ -2532,12 +2599,8 @@ RedactPopover.prototype.onselect = function(e){\n\
  */\n\
 \n\
 RedactPopover.prototype.onchange = function(e){\n\
-  var sel = window.getSelection();\n\
-  if ('Range' != sel.type) return this.hide();\n\
-  var range = sel.getRangeAt(0);\n\
-  var start = range.startOffset;\n\
-  var end = range.endOffset;\n\
-  if (start == end) this.hide();\n\
+  if ('' != trim(selected())) return;\n\
+  this.hide();\n\
 };\n\
 \n\
 /**\n\
@@ -2578,15 +2641,32 @@ RedactPopover.prototype.onblur = function(e){\n\
 
 
 
+
+
+
+
+
+
+
+
 require.alias("yields-redact-popover/index.js", "redact-popover-demo/deps/redact-popover/index.js");
 require.alias("yields-redact-popover/index.js", "redact-popover-demo/deps/redact-popover/index.js");
 require.alias("yields-redact-popover/index.js", "redact-popover/index.js");
+require.alias("yields-get-selected-text/index.js", "yields-redact-popover/deps/get-selected-text/index.js");
+require.alias("yields-get-selected-text/index.js", "yields-redact-popover/deps/get-selected-text/index.js");
+require.alias("yields-get-selected-text/index.js", "yields-get-selected-text/index.js");
 require.alias("yields-on-select/index.js", "yields-redact-popover/deps/on-select/index.js");
 require.alias("yields-on-select/index.js", "yields-redact-popover/deps/on-select/index.js");
 require.alias("component-event/index.js", "yields-on-select/deps/event/index.js");
 
 require.alias("component-raf/index.js", "yields-on-select/deps/raf/index.js");
 
+require.alias("bmcmahen-modifier/index.js", "yields-on-select/deps/modifier/index.js");
+require.alias("bmcmahen-modifier/index.js", "yields-on-select/deps/modifier/index.js");
+require.alias("bmcmahen-modifier/index.js", "bmcmahen-modifier/index.js");
+require.alias("bmcmahen-text-selection/index.js", "yields-on-select/deps/text-selection/index.js");
+require.alias("bmcmahen-text-selection/index.js", "yields-on-select/deps/text-selection/index.js");
+require.alias("bmcmahen-text-selection/index.js", "bmcmahen-text-selection/index.js");
 require.alias("yields-on-select/index.js", "yields-on-select/index.js");
 require.alias("component-emitter/index.js", "yields-redact-popover/deps/emitter/index.js");
 require.alias("component-indexof/index.js", "component-emitter/deps/indexof/index.js");
@@ -2602,6 +2682,8 @@ require.alias("component-query/index.js", "component-matches-selector/deps/query
 
 require.alias("discore-closest/index.js", "discore-closest/index.js");
 require.alias("component-event/index.js", "component-delegate/deps/event/index.js");
+
+require.alias("component-trim/index.js", "yields-redact-popover/deps/trim/index.js");
 
 require.alias("component-tip/index.js", "yields-redact-popover/deps/tip/index.js");
 require.alias("component-tip/template.js", "yields-redact-popover/deps/tip/template.js");

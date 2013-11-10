@@ -46,15 +46,15 @@
     }
 
     .tip {
-      -webkit-transition: -webkit-transform 50ms;
-      -moz-transition: -moz-transform 50ms;
-      -webkit-transform: scale(1);
-      -moz-transform: scale(1);
+      -webkit-transition: opacity 100ms, left 100ms, top 100ms;
+      -moz-transition: opacity 100ms, left 100ms, top 100ms;
+      transition: opacity 100ms, left 100ms, top 100ms;
     }
 
     .tip-hide {
-      -webkit-transform: scale(0);
-      -moz-transform: scale(0);
+      opacity: 0;
+      left: -200px;
+      top: -200px;
     }
   </style>
 </head>
