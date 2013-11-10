@@ -32,6 +32,7 @@ function RedactPopover(el){
   this.classes = this.tip.classes;
   this.classes.add('redact-popover');
   this.events = events(this.el, this);
+  this.winEvents = events(window, this);
   this.editorEvents = events(el, this);
   this.editor = el;
   this.bind();
@@ -56,6 +57,7 @@ RedactPopover.prototype.bind = function(){
   this._select = onselect(this.editor, select);
   this.editorEvents.bind('mouseup', 'onchange');
   this.editorEvents.bind('keyup', 'onchange');
+  this.winEvents.bind('resize', 'onselect');
   this.editorEvents.bind('blur');
   this.events.bind('mousedown');
   this.events.bind('click');
