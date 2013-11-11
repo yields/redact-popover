@@ -216,7 +216,7 @@ RedactPopover.prototype.onclick = function(e){
 RedactPopover.prototype.onselect = function(e){
   if ('' == trim(selected())) return;
   var pos = this.position();
-  this.tip.position(pos.pos);
+  this.tip.position(pos.at);
   this.classes.add('redact-popover');
   this.tip.show(pos.x, pos.y);
 };
@@ -235,27 +235,23 @@ RedactPopover.prototype.position = function(){
   var y = a.top + -b.height;
   var sx = window.scrollX;
   var sy = window.scrollY;
-  var pos = 'south';
+  var at = 'south';
 
   // north
   if (a.top < b.height) {
     y = a.top + (b.height / 2);
-    pos = 'north';
+    at = 'north';
   }
 
   return {
-    left: x += sx,
-    top: y += sy,
-    pos: pos,
-    x: x,
-    y: y
+    x: x + sx,
+    y: y + sy,
+    at: at
   };
 };
 
 /**
  * on-focus.
- *
- * TODO: optimize
  *
  * @param {Event} e
  * @api private
