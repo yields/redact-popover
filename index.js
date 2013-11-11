@@ -207,19 +207,49 @@ RedactPopover.prototype.onclick = function(e){
 /**
  * on-select
  *
+ * TODO: component/tip classes bug.
+ *
  * @param {Event} e
  * @api private
  */
 
 RedactPopover.prototype.onselect = function(e){
   if ('' == trim(selected())) return;
+  var pos = this.position();
+  this.tip.position(pos.pos);
+  this.classes.add('redact-popover');
+  this.tip.show(pos.x, pos.y);
+};
+
+/**
+ * Calculate position.
+ *
+ * @return {Object}
+ * @api private
+ */
+
+RedactPopover.prototype.position = function(){
   var a = this.boundary();
   var b = this.size;
-  var x = a.left + (a.width / 2) - (b.width / 2)
+  var x = a.left + (a.width / 2) - (b.width / 2);
   var y = a.top + -b.height;
-  var wx = window.scrollX;
-  var wy = window.scrollY;
-  this.tip.show(x + wx, y + wy);
+  var sx = window.scrollX;
+  var sy = window.scrollY;
+  var pos = 'south';
+
+  // north
+  if (a.top < b.height) {
+    y = a.top + (b.height / 2);
+    pos = 'north';
+  }
+
+  return {
+    left: x += sx,
+    top: y += sy,
+    pos: pos,
+    x: x,
+    y: y
+  };
 };
 
 /**
