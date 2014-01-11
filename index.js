@@ -10,7 +10,6 @@ var events = require('events');
 var slug = require('slug');
 var trim = require('trim');
 var Tip = require('tip');
-var classes = require('classes');
 
 /**
  * Export `RedactPopover`

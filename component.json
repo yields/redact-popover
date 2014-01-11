@@ -15,7 +15,6 @@
     "component/trim": "*",
     "component/tip": "*",
     "yields/slug": "*",
-    "component/classes": "*",
     "bmcmahen/monitor-text-selection": "*"
   },
   "development": {
