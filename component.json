@@ -10,12 +10,13 @@
   "scripts": ["index.js"],
   "dependencies": {
     "yields/get-selected-text": "*",
-    "yields/on-select": "*",
     "component/emitter": "*",
     "component/events": "*",
     "component/trim": "*",
     "component/tip": "*",
-    "yields/slug": "*"
+    "yields/slug": "*",
+    "component/classes": "*",
+    "bmcmahen/monitor-text-selection": "*"
   },
   "development": {
     "component/aurora-tip": "*"

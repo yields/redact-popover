@@ -4,12 +4,13 @@
  */
 
 var selected = require('get-selected-text');
-var onselect = require('on-select');
+var monitor = require('monitor-text-selection');
 var Emitter = require('emitter');
 var events = require('events');
 var slug = require('slug');
 var trim = require('trim');
 var Tip = require('tip');
+var classes = require('classes');
 
 /**
  * Export `RedactPopover`
@@ -53,13 +54,12 @@ Emitter(RedactPopover.prototype);
 
 RedactPopover.prototype.bind = function(){
   if (this.bound) return this;
-  var select = this.onselect.bind(this);
-  this._select = onselect(this.editor, select);
-  this.editorEvents.bind('mouseup', 'onchange');
-  this.editorEvents.bind('keyup', 'onchange');
-  this.winEvents.bind('resize', 'onselect');
-  this.editorEvents.bind('blur');
-  this.events.bind('mousedown');
+  
+  this.monitor = monitor(el);
+  this.monitorEvents = events(this.monitor, this);
+  this.monitorEvents.bind('selected', 'onselect');
+  this.monitorEvents.bind('deselected', 'hide');
+
   this.events.bind('click');
   this.bound = true;
   return this;
@@ -74,10 +74,10 @@ RedactPopover.prototype.bind = function(){
 
 RedactPopover.prototype.unbind = function(){
   if (!this.bound) return this;
-  this.editorEvents.unbind();
+  this.monitorEvents.unbind();
+  this.monitor.unbind();
   this.events.unbind();
   this.bound = null;
-  this._select();
   return this;
 };
 
@@ -177,16 +177,7 @@ RedactPopover.prototype.boundary = function(){
     .getBoundingClientRect();
 };
 
-/**
- * on-mousedown
- *
- * @param {Event} e
- * @api private
- */
 
-RedactPopover.prototype.onmousedown = function(e){
-  this.ignore = true;
-};
 
 /**
  * on-click.
@@ -248,28 +239,4 @@ RedactPopover.prototype.position = function(){
     y: y + sy,
     at: at
   };
-};
-
-/**
- * on-focus.
- *
- * @param {Event} e
- * @api private
- */
-
-RedactPopover.prototype.onchange = function(e){
-  if ('' != trim(selected())) return;
-  this.hide();
-};
-
-/**
- * on-blur.
- *
- * @param {Event} e
- * @api private
- */
-
-RedactPopover.prototype.onblur = function(e){
-  if (!this.ignore) this.hide();
-  this.ignore = null;
 };
