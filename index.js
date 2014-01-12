@@ -33,7 +33,6 @@ function RedactPopover(el){
   this.classes.add('redact-popover');
   this.events = events(this.el, this);
   this.winEvents = events(window, this);
-  this.editorEvents = events(el, this);
   this.editor = el;
   this.bind();
 }
@@ -59,6 +58,8 @@ RedactPopover.prototype.bind = function(){
   this.monitorEvents.bind('selected', 'onselect');
   this.monitorEvents.bind('deselected', 'hide');
 
+  this.winEvents.bind('resize', 'onselect');
+
   this.events.bind('click');
   this.bound = true;
   return this;
@@ -75,6 +76,7 @@ RedactPopover.prototype.unbind = function(){
   if (!this.bound) return this;
   this.monitorEvents.unbind();
   this.monitor.unbind();
+  this.winEvents.unbind();
   this.events.unbind();
   this.bound = null;
   return this;
