@@ -15,9 +15,13 @@
     "component/trim": "*",
     "component/tip": "*",
     "yields/slug": "*",
-    "bmcmahen/monitor-text-selection": "*"
+    "bmcmahen/monitor-text-selection": "*",
+    "bmcmahen/selection-position": "*"
   },
   "development": {
-    "component/aurora-tip": "*"
+    "component/aurora-tip": "*",
+    "component/assert": "*",
+    "bmcmahen/selection-range": "*",
+    "component/classes": "*"
   }
 }

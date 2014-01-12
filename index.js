@@ -10,6 +10,7 @@ var events = require('events');
 var slug = require('slug');
 var trim = require('trim');
 var Tip = require('tip');
+var selectionPosition = require('selection-position');
 
 /**
  * Export `RedactPopover`
@@ -53,7 +54,7 @@ Emitter(RedactPopover.prototype);
 RedactPopover.prototype.bind = function(){
   if (this.bound) return this;
   
-  this.monitor = monitor(el);
+  this.monitor = monitor(this.editor);
   this.monitorEvents = events(this.monitor, this);
   this.monitorEvents.bind('selected', 'onselect');
   this.monitorEvents.bind('deselected', 'hide');
@@ -118,6 +119,7 @@ RedactPopover.prototype.remove = function(id){
   if (!el) return this;
   this.el.removeChild(el);
   this.emit('remove', el);
+  delete this.options[id];
   this.refresh();
   return this;
 };
@@ -164,21 +166,6 @@ RedactPopover.prototype.hide = function(){
   } catch (e) {}
 };
 
-/**
- * Get the bounding client range of cursor
- *
- * @return {Object}
- * @api private
- */
-
-RedactPopover.prototype.boundary = function(){
-  return window
-    .getSelection()
-    .getRangeAt(0)
-    .getBoundingClientRect();
-};
-
-
 
 /**
  * on-click.
@@ -221,7 +208,7 @@ RedactPopover.prototype.onselect = function(e){
  */
 
 RedactPopover.prototype.position = function(){
-  var a = this.boundary();
+  var a = selectionPosition();
   var b = this.size;
   var x = a.left + (a.width / 2) - (b.width / 2);
   var y = a.top + -b.height;
