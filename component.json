@@ -4,7 +4,7 @@
   "demo": "http://yields.github.io/redact-popover/index.html",
   "description": "medium inspired editor popover",
   "keywords": ["medium", "popover", "tooltip", "tip", "redact"],
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "MIT",
   "main": "index.js",
   "scripts": ["index.js"],

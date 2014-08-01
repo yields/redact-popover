@@ -1,4 +1,12 @@
 
+0.2.0 / 2014-08-01
+==================
+
+ * add basic tests; use selection-position module [bmcmahen]
+ * re-add winEvents [bmcmahen]
+ * remove classes dependency [bmcmahen]
+ * use monitor-selection for selection events. fixes #6
+
 0.1.1 / 2013-11-12
 ==================
 
